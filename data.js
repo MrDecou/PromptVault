@@ -3,8 +3,8 @@
 // Missing images fall back to a colored placeholder, so the site works from day one.
 window.SITE = {
   title: "Prompt Vault",
-  tagline: "NovelAI prompts, vibe transfers, and the links I keep reaching for.",
-  author: { name: "Your name", url: "https://github.com/your-username" },
+  tagline: "NovelAI prompts, vibe transfers, and helpful links.",
+  author: { name: "Mr Decou", url: "https://github.com/MrDecou" },
 
   prompts: [
     {
