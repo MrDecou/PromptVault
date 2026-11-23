@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prompt Vault</title>
+<meta name="description" content="A searchable collection of NovelAI prompts, vibe transfer codes, and resources.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f6ecd9;--card:#fff8ea;--ink:#2a1b4d;--mute:#6d5f7a;--line:#e0cfae;--accent:#c2255c;--accent-ink:#fff;--teal:#1f5fa8;--chip:#ecdcbc;--code:#f0e3c6;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--bg:#150f2e;--card:#1f1743;--ink:#f3e8d0;--mute:#b3a6c9;--line:#35295f;--accent:#f2a93b;--accent-ink:#2a1706;--teal:#62c4d9;--chip:#2a2054;--code:#100b24;color-scheme:dark}}
+*{box-sizing:border-box}
+html{scroll-padding-top:5rem}
+body{margin:0;border-top:6px solid;border-image:linear-gradient(90deg,#c2255c,#e8833a,#f2c14e,#3aa89c,#2f6fc4,#7a4bb8) 1;background:var(--bg);color:var(--ink);font:400 16px/1.55 "Instrument Sans",system-ui,sans-serif}
+h1,h2,h3{font-family:"Bricolage Grotesque","Instrument Sans",system-ui,sans-serif;line-height:1.1;margin:0}
+a{color:var(--teal)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:6px}
+header{max-width:1200px;margin:0 auto;padding:3rem 1.25rem 1.5rem}
+header h1{font-size:clamp(2.6rem,8vw,5.5rem);font-weight:700;letter-spacing:-.03em}
+header p{max-width:46ch;color:var(--mute);margin:.75rem 0 0;font-size:1.1rem}
+.bar{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.bar-in{max-width:1200px;margin:0 auto;padding:.75rem 1.25rem;display:flex;gap:1rem;flex-wrap:wrap;align-items:center}
+nav{display:flex;gap:.25rem}
+nav a{padding:.45rem .9rem;border-radius:99px;text-decoration:none;color:var(--ink);font-weight:500}
+nav a[aria-current=page]{background:var(--ink);color:var(--bg)}
+.search{flex:1;min-width:200px}
+.search input{width:100%;padding:.6rem 1rem;border-radius:99px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit}
+main{max-width:1200px;margin:0 auto;padding:1.25rem}
+section[hidden]{display:none}
+.tags{display:flex;gap:.4rem;flex-wrap:wrap;margin:0 0 1.25rem}
+.chip{border:0;background:var(--chip);color:var(--ink);padding:.3rem .8rem;border-radius:99px;font:inherit;font-size:.9rem;cursor:pointer}
+.chip[data-s=in]{background:var(--accent);color:var(--accent-ink)}.chip[data-s=out]{background:transparent;color:var(--mute);text-decoration:line-through;box-shadow:inset 0 0 0 1.5px var(--mute)}.hint{color:var(--mute);font-size:.9rem;margin:0 0 .6rem}.clear{background:none;border:0;color:var(--teal);font:inherit;text-decoration:underline;cursor:pointer;padding:.3rem .4rem}
+.count{color:var(--mute);margin:0 0 1rem;font-size:.95rem}
+.grid{columns:3 280px;column-gap:1rem}
+.card{break-inside:avoid;margin:0 0 1rem;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.card button.open{all:unset;display:block;width:100%;cursor:pointer}
+.card button.open:focus-visible{outline:3px solid var(--accent);outline-offset:-3px}
+.ph{background:linear-gradient(135deg,var(--chip),var(--code));aspect-ratio:3/4;display:grid;place-items:center;color:var(--mute);font-size:.9rem;position:relative}
+.ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.body{padding:.8rem 1rem 1rem}
+.body h3{font-size:1.2rem;margin-bottom:.4rem}
+.mini{display:flex;gap:.3rem;flex-wrap:wrap;color:var(--mute);font-size:.85rem}
+.btn{border:0;background:var(--accent);color:var(--accent-ink);padding:.5rem 1rem;border-radius:10px;font:600 .95rem "Instrument Sans",sans-serif;cursor:pointer}
+.btn.ghost{background:var(--chip);color:var(--ink)}
+.empty{padding:3rem 0;color:var(--mute)}
+pre{background:var(--code);border-radius:10px;padding:.9rem 1rem;white-space:pre-wrap;word-break:break-word;font:400 .9rem/1.5 ui-monospace,Menlo,Consolas,monospace;margin:.4rem 0 .7rem}
+dialog{border:1px solid var(--line);border-radius:18px;background:var(--card);color:var(--ink);padding:0;width:min(920px,94vw);max-height:92vh}
+dialog::backdrop{background:rgba(15,8,40,.65)}
+.d-in{padding:1.25rem;display:grid;gap:1.25rem;grid-template-columns:1fr 1.1fr}
+@media (max-width:720px){.d-in{grid-template-columns:1fr}}
+.shots{display:grid;gap:.5rem}
+.shots .ph{border-radius:10px;overflow:hidden}
+.d-head{display:flex;justify-content:space-between;align-items:start;gap:1rem}
+.d-head h2{font-size:1.8rem}
+.label{font-weight:600;margin:.8rem 0 0;display:flex;justify-content:space-between;align-items:center}
+.vgrid{display:grid;gap:1rem;grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+.vcard .ph{aspect-ratio:16/9}
+.meta{display:flex;gap:1rem;color:var(--mute);font-size:.9rem;margin:.2rem 0 .5rem}
+.rgroup{margin:0 0 2rem}
+.rgroup h2{font-size:1.5rem;margin-bottom:.6rem}
+.rgroup ul{list-style:none;margin:0;padding:0;display:grid;gap:.6rem}
+.rgroup li{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:.8rem 1rem}
+.rgroup li a{font-weight:600}
+.rgroup li p{margin:.15rem 0 0;color:var(--mute)}
+footer{max-width:1200px;margin:0 auto;padding:2rem 1.25rem 3rem;color:var(--mute)}
+#toast{position:fixed;left:50%;bottom:1.5rem;transform:translateX(-50%) translateY(150%);background:var(--ink);color:var(--bg);padding:.6rem 1.1rem;border-radius:99px;transition:transform .2s;z-index:20}
+#toast.on{transform:translateX(-50%)}
+@media (prefers-reduced-motion:reduce){#toast{transition:none}}
+</style>
+</head>
+<body>
+<header>
+  <h1 id="title"></h1>
+  <p id="tagline"></p>
+</header>
+<div class="bar"><div class="bar-in">
+  <nav aria-label="Sections">
+    <a href="#prompts">Prompts</a><a href="#vibes">Vibe transfer</a><a href="#resources">Resources</a>
+  </nav>
+  <div class="search"><input id="q" type="search" placeholder="Search prompts, tags, vibes…" aria-label="Search"></div>
+  <button class="btn" id="rand" type="button">Random prompt</button>
+</div></div>
+<main>
+  <section id="prompts"><p class="hint">Click a tag to include it, again to exclude it, and a third time to remove it.</p><div class="tags" id="tagbar"></div><p class="count" id="pcount"></p><div class="grid" id="pgrid"></div></section>
+  <section id="vibes" hidden><p class="count" id="vcount"></p><div class="vgrid" id="vgrid"></div></section>
+  <section id="resources" hidden></section>
+</main>
+<footer id="foot"></footer>
+<dialog id="dlg"></dialog>
+<div id="toast" role="status"></div>
+<script src="data.js"></script>
+<script>
+const D = window.SITE, $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let q = "", tagState = new Map();
+
+document.title = D.title; $("#title").textContent = D.title; $("#tagline").textContent = D.tagline;
+$("#foot").innerHTML = `Made by <a href="${esc(D.author.url)}">${esc(D.author.name)}</a>. Results vary with seed, model version, and settings.`;
+
+function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove("on"),1600)}
+async function copy(text, msg="Copied"){
+  try{await navigator.clipboard.writeText(text)}catch{const a=document.createElement("textarea");a.value=text;document.body.append(a);a.select();document.execCommand("copy");a.remove()}
+  toast(msg)
+}
+const img = (src, alt) => src ? `<img src="${esc(src)}" alt="${esc(alt)}" loading="lazy" onerror="this.remove()">` : "";
+const matches = (item, fields) => {
+  const hay = fields.map(f => Array.isArray(f) ? f.join(" ") : f).join(" ").toLowerCase();
+  return q.toLowerCase().split(/\s+/).filter(Boolean).every(w => hay.includes(w));
+};
+
+// ---- Prompts ----
+function drawTags(){
+  const all = [...new Set(D.prompts.flatMap(p => p.tags))].sort();
+  $("#tagbar").innerHTML = all.map(t => {
+    const s = tagState.get(t) || "", st = s==="in" ? "included" : s==="out" ? "excluded" : "not filtered";
+    return `<button class="chip" data-s="${s}" data-t="${esc(t)}" aria-label="${esc(t)}, ${st}">${s==="in" ? "+ " : s==="out" ? "− " : ""}${esc(t)}</button>`;
+  }).join("") + (tagState.size ? `<button class="clear" data-clear="1">Clear tags</button>` : "");
+}
+$("#tagbar").addEventListener("click", e => {
+  if(e.target.dataset.clear){ tagState.clear(); drawTags(); drawPrompts(); return; }
+  const t = e.target.dataset.t; if(!t) return;
+  const s = tagState.get(t);
+  if(!s) tagState.set(t,"in"); else if(s==="in") tagState.set(t,"out"); else tagState.delete(t);
+  drawTags(); drawPrompts();
+});
+function getList(){
+  return D.prompts.map((p,i)=>({p,i})).filter(({p}) =>
+    [...tagState].every(([t,s]) => s==="in" ? p.tags.includes(t) : !p.tags.includes(t)) && matches(p, [p.title, p.tags, p.prompt, p.notes]));
+}
+$("#rand").addEventListener("click", () => {
+  if(location.hash !== "#prompts") location.hash = "prompts";
+  const l = getList();
+  if(!l.length){ toast("No prompts match your filters"); return; }
+  openPrompt(l[Math.floor(Math.random()*l.length)].p);
+});
+function drawPrompts(){
+  const list = getList();
+  $("#pcount").textContent = `${list.length} of ${D.prompts.length} prompts`;
+  $("#pgrid").innerHTML = list.length ? list.map(({p,i}) => `
+    <article class="card"><button class="open" data-i="${i}" aria-label="Open ${esc(p.title)}">
+      <div class="ph">${p.images.length ? "" : "No image yet"}${img(p.images[0], p.title)}</div>
+      <div class="body"><h3>${esc(p.title)}</h3><div class="mini">${p.tags.map(t=>`<span>#${esc(t)}</span>`).join("")}</div></div>
+    </button></article>`).join("") : `<p class="empty">Nothing matches. Try fewer words or clear a tag.</p>`;
+}
+$("#pgrid").addEventListener("click", e => {
+  const b = e.target.closest(".open"); if(b) openPrompt(D.prompts[b.dataset.i]);
+});
+function openPrompt(p){
+  const d = $("#dlg");
+  d.innerHTML = `<div class="d-in">
+    <div class="shots">${p.images.length ? p.images.map(s=>`<div class="ph">${img(s,p.title)}</div>`).join("") : `<div class="ph">No image yet</div>`}</div>
+    <div>
+      <div class="d-head"><h2>${esc(p.title)}</h2><button class="btn ghost" id="x">Close</button></div>
+      <div class="mini" style="margin-top:.4rem">${p.tags.map(t=>`<span>#${esc(t)}</span>`).join("")}</div>
+      <div class="label">Prompt <button class="btn" data-c="p">Copy prompt</button></div><pre>${esc(p.prompt)}</pre>
+      ${p.negative ? `<div class="label">Undesired content <button class="btn ghost" data-c="n">Copy</button></div><pre>${esc(p.negative)}</pre>` : ""}
+      ${p.model ? `<p class="meta">Model: ${esc(p.model)}</p>` : ""}
+      ${p.notes ? `<p>${esc(p.notes)}</p>` : ""}
+    </div></div>`;
+  d.onclick = e => {
+    if(e.target === d || e.target.id === "x") d.close();
+    const c = e.target.dataset.c;
+    if(c) copy(c==="p" ? p.prompt : p.negative, c==="p" ? "Prompt copied" : "Copied");
+  };
+  d.showModal();
+}
+
+// ---- Vibes ----
+function drawVibes(){
+  const list = D.vibes.filter(v => matches(v, [v.name, v.tags, v.notes]));
+  $("#vcount").textContent = `${list.length} of ${D.vibes.length} vibe transfers`;
+  $("#vgrid").innerHTML = list.length ? list.map(v => `
+    <article class="card vcard"><div class="ph">${v.image ? "" : "No preview yet"}${img(v.image, v.name)}</div>
+    <div class="body"><h3>${esc(v.name)}</h3>
+      <div class="meta"><span>Strength ${esc(v.strength)}</span><span>Info extracted ${esc(v.infoExtracted)}</span></div>
+      <div class="mini">${v.tags.map(t=>`<span>#${esc(t)}</span>`).join("")}</div>
+      <pre>${esc(v.code)}</pre>
+      ${v.notes ? `<p style="margin:.2rem 0 .7rem">${esc(v.notes)}</p>` : ""}
+      <button class="btn" data-code="${esc(v.code)}">Copy code</button></div></article>`).join("")
+    : `<p class="empty">No vibe transfers match that search.</p>`;
+}
+$("#vgrid").addEventListener("click", e => { const c = e.target.dataset.code; if(c) copy(c, "Code copied"); });
+
+// ---- Resources ----
+function drawResources(){
+  const rs = D.resources.filter(r => matches(r, [r.title, r.desc, r.category]));
+  const groups = rs.reduce((m,r)=>((m[r.category] ||= []).push(r), m), {});
+  $("#resources").innerHTML = Object.keys(groups).length ? Object.entries(groups).map(([c,items]) => `
+    <div class="rgroup"><h2>${esc(c)}</h2><ul>${items.map(r=>`<li><a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.title)}</a><p>${esc(r.desc)}</p></li>`).join("")}</ul></div>`).join("")
+    : `<p class="empty">No resources match that search.</p>`;
+}
+
+// ---- Routing (plain #name hashes) ----
+function route(){
+  const h = ["prompts","vibes","resources"].includes(location.hash.slice(1)) ? location.hash.slice(1) : "prompts";
+  ["prompts","vibes","resources"].forEach(id => $("#"+id).hidden = id !== h);
+  document.querySelectorAll("nav a").forEach(a => a.getAttribute("href")==="#"+h ? a.setAttribute("aria-current","page") : a.removeAttribute("aria-current"));
+}
+$("#q").addEventListener("input", e => { q = e.target.value; drawPrompts(); drawVibes(); drawResources(); });
+addEventListener("hashchange", route);
+drawTags(); drawPrompts(); drawVibes(); drawResources(); route();
+</script>
+</body>
+</html>
